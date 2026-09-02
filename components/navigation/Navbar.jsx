@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
-
+import { createPortal } from "react-dom";
 import {
     Heart,
     Menu,
     ShoppingBag,
     X,
 } from "lucide-react";
-
 import { useEffect, useState } from "react";
 
 import { useCart } from "../providers/CartContext";
@@ -32,6 +31,11 @@ function Navbar() {
             return;
         }
 
+        const previousOverflow =
+            document.body.style.overflow;
+
+        document.body.style.overflow = "hidden";
+
         function handleKeyDown(event) {
             if (event.key === "Escape") {
                 setIsMenuOpen(false);
@@ -43,17 +47,190 @@ function Navbar() {
             handleKeyDown
         );
 
-        document.body.style.overflow = "hidden";
-
         return () => {
             document.removeEventListener(
                 "keydown",
                 handleKeyDown
             );
 
-            document.body.style.overflow = "";
+            document.body.style.overflow =
+                previousOverflow;
         };
     }, [isMenuOpen]);
+
+    const mobileMenu =
+        isMenuOpen &&
+            typeof document !== "undefined"
+            ? createPortal(
+                <div
+                    className="fixed inset-0 z-9999 lg:hidden"
+                    onClick={() =>
+                        setIsMenuOpen(false)
+                    }
+                >
+                    {/* Full Screen Overlay */}
+                    <div className="absolute inset-0 bg-black/40 backdrop-blur-md" />
+
+                    {/* Mobile Drawer */}
+                    <aside
+                        id="mobile-navigation"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="منوی فروشگاه"
+                        className="absolute right-0 top-0 flex h-dvh w-[86%] max-w-sm flex-col overflow-y-auto border-l border-border bg-surface p-5 shadow-2xl"
+                        onClick={(event) =>
+                            event.stopPropagation()
+                        }
+                    >
+                        {/* Header */}
+                        <div className="flex items-center justify-between border-b border-border pb-5">
+                            <div>
+                                <p className="text-base font-bold text-foreground">
+                                    ایرانی شاپ
+                                </p>
+
+                                <p className="mt-1 text-[11px] text-muted">
+                                    منوی فروشگاه
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setIsMenuOpen(
+                                        false
+                                    )
+                                }
+                                aria-label="بستن منو"
+                                className="flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors duration-200 hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
+                            >
+                                <X
+                                    aria-hidden="true"
+                                    size={21}
+                                    strokeWidth={1.8}
+                                />
+                            </button>
+                        </div>
+
+                        {/* Main Navigation */}
+                        <nav
+                            aria-label="منوی موبایل"
+                            className="mt-5 flex flex-col gap-1"
+                        >
+                            {navigationItems.map(
+                                (item) => (
+                                    <Link
+                                        key={item.label}
+                                        href={item.href}
+                                        onClick={() =>
+                                            setIsMenuOpen(
+                                                false
+                                            )
+                                        }
+                                        className="rounded-xl px-4 py-3.5 text-sm font-medium text-foreground transition-colors duration-200 hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
+                                    >
+                                        {item.label}
+                                    </Link>
+                                )
+                            )}
+                        </nav>
+
+                        {/* Secondary Links */}
+                        <div className="mt-5 border-t border-border pt-5">
+                            {/* Wishlist */}
+                            <Link
+                                href="/wishlist"
+                                onClick={() =>
+                                    setIsMenuOpen(
+                                        false
+                                    )
+                                }
+                                aria-label={
+                                    wishlistCount > 0
+                                        ? `علاقه‌مندی‌ها، ${wishlistCount} کالا`
+                                        : "علاقه‌مندی‌ها"
+                                }
+                                className="flex items-center justify-between rounded-xl px-4 py-3.5 text-sm font-medium text-foreground transition-colors duration-200 hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
+                            >
+                                <span className="flex items-center gap-3">
+                                    <Heart
+                                        aria-hidden="true"
+                                        size={18}
+                                        strokeWidth={
+                                            1.8
+                                        }
+                                    />
+
+                                    علاقه‌مندی‌ها
+                                </span>
+
+                                {wishlistCount >
+                                    0 && (
+                                        <span
+                                            aria-hidden="true"
+                                            className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-white"
+                                        >
+                                            {wishlistCount >
+                                                99
+                                                ? "99+"
+                                                : wishlistCount}
+                                        </span>
+                                    )}
+                            </Link>
+
+                            {/* Cart */}
+                            <Link
+                                href="/cart"
+                                onClick={() =>
+                                    setIsMenuOpen(
+                                        false
+                                    )
+                                }
+                                aria-label={
+                                    totalItems > 0
+                                        ? `سبد خرید، ${totalItems} کالا`
+                                        : "سبد خرید"
+                                }
+                                className="mt-1 flex items-center justify-between rounded-xl px-4 py-3.5 text-sm font-medium text-foreground transition-colors duration-200 hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
+                            >
+                                <span className="flex items-center gap-3">
+                                    <ShoppingBag
+                                        aria-hidden="true"
+                                        size={18}
+                                        strokeWidth={
+                                            1.8
+                                        }
+                                    />
+
+                                    سبد خرید
+                                </span>
+
+                                {totalItems >
+                                    0 && (
+                                        <span
+                                            aria-hidden="true"
+                                            className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-white"
+                                        >
+                                            {totalItems >
+                                                99
+                                                ? "99+"
+                                                : totalItems}
+                                        </span>
+                                    )}
+                            </Link>
+                        </div>
+
+                        {/* Bottom */}
+                        <div className="mt-auto border-t border-border pt-5">
+                            <p className="text-center text-[10px] text-muted">
+                                خرید آسان، سریع و مطمئن
+                            </p>
+                        </div>
+                    </aside>
+                </div>,
+                document.body
+            )
+            : null;
 
     return (
         <>
@@ -73,7 +250,7 @@ function Navbar() {
                 ))}
             </nav>
 
-            {/* Mobile Navigation Actions */}
+            {/* Mobile Actions */}
             <div className="mr-auto flex shrink-0 items-center gap-2 lg:hidden">
                 {/* Cart */}
                 <Link
@@ -106,7 +283,9 @@ function Navbar() {
                 {/* Menu */}
                 <button
                     type="button"
-                    onClick={() => setIsMenuOpen(true)}
+                    onClick={() =>
+                        setIsMenuOpen(true)
+                    }
                     aria-label="باز کردن منو"
                     aria-expanded={isMenuOpen}
                     aria-controls="mobile-navigation"
@@ -120,151 +299,8 @@ function Navbar() {
                 </button>
             </div>
 
-            {/* Mobile Menu */}
-            {isMenuOpen && (
-                <div
-                    className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] lg:hidden"
-                    onClick={() => setIsMenuOpen(false)}
-                >
-                    <aside
-                        id="mobile-navigation"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label="منوی فروشگاه"
-                        className="absolute right-0 top-0 flex h-full w-[86%] max-w-sm flex-col border-l border-border bg-surface p-5 shadow-2xl"
-                        onClick={(event) =>
-                            event.stopPropagation()
-                        }
-                    >
-                        {/* Menu Header */}
-                        <div className="flex items-center justify-between border-b border-border pb-5">
-                            <div>
-                                <p className="text-base font-bold text-foreground">
-                                    ایرانی شاپ
-                                </p>
-
-                                <p className="mt-1 text-[11px] text-muted">
-                                    منوی فروشگاه
-                                </p>
-                            </div>
-
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    setIsMenuOpen(false)
-                                }
-                                aria-label="بستن منو"
-                                className="flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors duration-200 hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
-                            >
-                                <X
-                                    aria-hidden="true"
-                                    size={21}
-                                    strokeWidth={1.8}
-                                />
-                            </button>
-                        </div>
-
-                        {/* Navigation Links */}
-                        <nav
-                            aria-label="منوی موبایل"
-                            className="mt-5 flex flex-col gap-1"
-                        >
-                            {navigationItems.map((item) => (
-                                <Link
-                                    key={item.label}
-                                    href={item.href}
-                                    onClick={() =>
-                                        setIsMenuOpen(false)
-                                    }
-                                    className="rounded-xl px-4 py-3.5 text-sm font-medium text-foreground transition-colors duration-200 hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
-                                >
-                                    {item.label}
-                                </Link>
-                            ))}
-                        </nav>
-
-                        {/* Secondary Links */}
-                        <div className="mt-5 border-t border-border pt-5">
-                            {/* Wishlist */}
-                            <Link
-                                href="/wishlist"
-                                onClick={() =>
-                                    setIsMenuOpen(false)
-                                }
-                                aria-label={
-                                    wishlistCount > 0
-                                        ? `علاقه‌مندی‌ها، ${wishlistCount} کالا`
-                                        : "علاقه‌مندی‌ها"
-                                }
-                                className="flex items-center justify-between rounded-xl px-4 py-3.5 text-sm font-medium text-foreground transition-colors duration-200 hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
-                            >
-                                <span className="flex items-center gap-3">
-                                    <Heart
-                                        aria-hidden="true"
-                                        size={18}
-                                        strokeWidth={1.8}
-                                    />
-
-                                    علاقه‌مندی‌ها
-                                </span>
-
-                                {wishlistCount > 0 && (
-                                    <span
-                                        aria-hidden="true"
-                                        className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-white"
-                                    >
-                                        {wishlistCount > 99
-                                            ? "99+"
-                                            : wishlistCount}
-                                    </span>
-                                )}
-                            </Link>
-
-                            {/* Cart */}
-                            <Link
-                                href="/cart"
-                                onClick={() =>
-                                    setIsMenuOpen(false)
-                                }
-                                aria-label={
-                                    totalItems > 0
-                                        ? `سبد خرید، ${totalItems} کالا`
-                                        : "سبد خرید"
-                                }
-                                className="mt-1 flex items-center justify-between rounded-xl px-4 py-3.5 text-sm font-medium text-foreground transition-colors duration-200 hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
-                            >
-                                <span className="flex items-center gap-3">
-                                    <ShoppingBag
-                                        aria-hidden="true"
-                                        size={18}
-                                        strokeWidth={1.8}
-                                    />
-
-                                    سبد خرید
-                                </span>
-
-                                {totalItems > 0 && (
-                                    <span
-                                        aria-hidden="true"
-                                        className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-white"
-                                    >
-                                        {totalItems > 99
-                                            ? "99+"
-                                            : totalItems}
-                                    </span>
-                                )}
-                            </Link>
-                        </div>
-
-                        {/* Bottom */}
-                        <div className="mt-auto border-t border-border pt-5">
-                            <p className="text-center text-[10px] text-muted">
-                                خرید آسان، سریع و مطمئن
-                            </p>
-                        </div>
-                    </aside>
-                </div>
-            )}
+            {/* Mobile Menu Portal */}
+            {mobileMenu}
         </>
     );
 }
