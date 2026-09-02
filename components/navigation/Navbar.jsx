@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
     Heart,
     Menu,
-    Search,
     ShoppingBag,
     X,
 } from "lucide-react";
@@ -44,11 +43,15 @@ function Navbar() {
             handleKeyDown
         );
 
+        document.body.style.overflow = "hidden";
+
         return () => {
             document.removeEventListener(
                 "keydown",
                 handleKeyDown
             );
+
+            document.body.style.overflow = "";
         };
     }, [isMenuOpen]);
 
@@ -71,20 +74,7 @@ function Navbar() {
             </nav>
 
             {/* Mobile Navigation Actions */}
-            <div className="flex items-center gap-1 lg:hidden">
-                {/* Search */}
-                <Link
-                    href="/products"
-                    aria-label="جستجوی محصولات"
-                    className="flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors duration-200 hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
-                >
-                    <Search
-                        aria-hidden="true"
-                        size={20}
-                        strokeWidth={1.8}
-                    />
-                </Link>
-
+            <div className="mr-auto flex shrink-0 items-center gap-2 lg:hidden">
                 {/* Cart */}
                 <Link
                     href="/cart"
@@ -135,14 +125,13 @@ function Navbar() {
                 <div
                     className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] lg:hidden"
                     onClick={() => setIsMenuOpen(false)}
-                    aria-hidden="true"
                 >
                     <aside
                         id="mobile-navigation"
                         role="dialog"
                         aria-modal="true"
                         aria-label="منوی فروشگاه"
-                        className="absolute right-0 top-0 flex h-full w-[85%] max-w-sm flex-col border-l border-border bg-surface p-5 shadow-2xl"
+                        className="absolute right-0 top-0 flex h-full w-[86%] max-w-sm flex-col border-l border-border bg-surface p-5 shadow-2xl"
                         onClick={(event) =>
                             event.stopPropagation()
                         }
@@ -196,6 +185,7 @@ function Navbar() {
 
                         {/* Secondary Links */}
                         <div className="mt-5 border-t border-border pt-5">
+                            {/* Wishlist */}
                             <Link
                                 href="/wishlist"
                                 onClick={() =>
@@ -230,6 +220,7 @@ function Navbar() {
                                 )}
                             </Link>
 
+                            {/* Cart */}
                             <Link
                                 href="/cart"
                                 onClick={() =>

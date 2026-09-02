@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 
-import { Heart, ShoppingBag } from "lucide-react";
-
 import Container from "./Container";
 import Navbar from "../navigation/Navbar";
 import SearchBar from "../navigation/SearchBar";
 import ThemeToggle from "../navigation/ThemeToggle";
+
+import { Heart, ShoppingBag } from "lucide-react";
 
 import { useCart } from "../providers/CartContext";
 import { useWishlist } from "../providers/WishlistContext";
@@ -20,9 +20,9 @@ function Header() {
         <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md transition-colors duration-200">
             <Container>
                 {/* Main Header */}
-                <div className="flex h-16 items-center gap-4 sm:gap-6">
+                <div className="flex h-16 items-center gap-3 sm:gap-6">
                     {/* Logo */}
-                    <div className="shrink-0">
+                    <div className="min-w-0 shrink-0">
                         <Link
                             href="/"
                             className="rounded-lg text-lg font-bold tracking-tight text-foreground transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 sm:text-xl"
