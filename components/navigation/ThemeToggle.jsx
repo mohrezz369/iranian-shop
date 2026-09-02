@@ -14,7 +14,10 @@ function ThemeToggle() {
     );
 
     function handleThemeToggle() {
-        const nextTheme = resolvedTheme === "dark" ? "light" : "dark";
+        const nextTheme =
+            resolvedTheme === "dark"
+                ? "light"
+                : "dark";
 
         const html = document.documentElement;
 
@@ -23,7 +26,9 @@ function ThemeToggle() {
         setTheme(nextTheme);
 
         window.setTimeout(() => {
-            html.classList.remove("theme-transition");
+            html.classList.remove(
+                "theme-transition"
+            );
         }, 200);
     }
 
@@ -46,12 +51,20 @@ function ThemeToggle() {
                     ? "فعال کردن حالت روشن"
                     : "فعال کردن حالت تاریک"
             }
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-foreground transition-colors duration-200 hover:bg-surface-elevated"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-foreground transition-colors duration-200 hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
         >
             {resolvedTheme === "dark" ? (
-                <Sun size={19} strokeWidth={1.8} />
+                <Sun
+                    aria-hidden="true"
+                    size={19}
+                    strokeWidth={1.8}
+                />
             ) : (
-                <Moon size={19} strokeWidth={1.8} />
+                <Moon
+                    aria-hidden="true"
+                    size={19}
+                    strokeWidth={1.8}
+                />
             )}
         </button>
     );

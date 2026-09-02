@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import ThemeToggle from "./ThemeToggle";
+
 import { useCart } from "../providers/CartContext";
 import { useWishlist } from "../providers/WishlistContext";
 
@@ -63,7 +65,7 @@ function Navbar() {
             typeof document !== "undefined"
             ? createPortal(
                 <div
-                    className="fixed inset-0 z-9999 lg:hidden"
+                    className="fixed inset-0 z-[9999] lg:hidden"
                     onClick={() =>
                         setIsMenuOpen(false)
                     }
@@ -82,7 +84,7 @@ function Navbar() {
                             event.stopPropagation()
                         }
                     >
-                        {/* Header */}
+                        {/* Menu Header */}
                         <div className="flex items-center justify-between border-b border-border pb-5">
                             <div>
                                 <p className="text-base font-bold text-foreground">
@@ -250,8 +252,11 @@ function Navbar() {
                 ))}
             </nav>
 
-            {/* Mobile Actions */}
+            {/* Mobile Navigation Actions */}
             <div className="mr-auto flex shrink-0 items-center gap-2 lg:hidden">
+                {/* Theme */}
+                <ThemeToggle />
+
                 {/* Cart */}
                 <Link
                     href="/cart"
